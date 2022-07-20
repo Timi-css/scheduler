@@ -17,7 +17,8 @@ export default function DayList(props) {
   });
   return (
     <ul>
-      <DayListItem
+      {dayItems}
+      {/* <DayListItem
         key={props.days[0].id}
         name={props.days[0].name}
         spots={props.days[0].spots}
@@ -37,7 +38,7 @@ export default function DayList(props) {
         spots={props.days[2].spots}
         selected={props.days[2].name === props.value}
         setDay={props.onChange}
-      />
+      /> */}
     </ul>
   );
 }
