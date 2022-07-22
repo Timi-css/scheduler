@@ -47,7 +47,7 @@ export default function Appointment(props) {
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer}
-          onDelete={deleteInterview}
+          onDelete={() => transition(CONFIRM)}
         />
       )}
       {mode === CREATE && (
