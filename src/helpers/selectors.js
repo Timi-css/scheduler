@@ -31,12 +31,14 @@ export function getInterview(state, interview) {
 }
 
 export const getInterviewersForDay = (state, day) => {
+  console.log("DayandState", state, day);
   const foundDay = state.days.find(
     (selectedDayItem) => selectedDayItem.name === day
   );
   if (!foundDay) {
     return [];
   }
+  console.log("FoundDay:", foundDay);
   return foundDay.interviewers.map(
     (interviewerId) => state.interviewers[interviewerId]
   );

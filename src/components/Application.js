@@ -2,56 +2,57 @@ import React, { useState, useEffect } from "react";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
 import axios from "axios";
-import { getAppointmentsForDay, getInterview } from "../helpers/selectors";
+import {
+  getAppointmentsForDay,
+  getInterview,
+  getInterviewersForDay,
+} from "../helpers/selectors";
 import "components/Application.scss";
 
-const appointments = {
-  ...state,
-  appointments,
-  1: {
-    id: 1,
-    time: "12pm",
-  },
-  2: {
-    id: 2,
-    time: "1pm",
-    interview: {
-      student: "Lydia Miller-Jones",
-      interviewer: {
-        id: 3,
-        name: "Sylvia Palmer",
-        avatar: "https://i.imgur.com/LpaY82x.png",
-      },
-    },
-  },
-  3: {
-    id: 3,
-    time: "2pm",
-  },
-  4: {
-    id: 4,
-    time: "3pm",
-    interview: {
-      student: "Archie Andrews",
-      interviewer: {
-        id: 4,
-        name: "Cohana Roy",
-        avatar: "https://i.imgur.com/FK8V841.jpg",
-      },
-    },
-  },
-  5: {
-    id: 5,
-    time: "4pm",
-  },
-};
+// const appointments = {
+//   1: {
+//     id: 1,
+//     time: "12pm",
+//   },
+//   2: {
+//     id: 2,
+//     time: "1pm",
+//     interview: {
+//       student: "Lydia Miller-Jones",
+//       interviewer: {
+//         id: 3,
+//         name: "Sylvia Palmer",
+//         avatar: "https://i.imgur.com/LpaY82x.png",
+//       },
+//     },
+//   },
+//   3: {
+//     id: 3,
+//     time: "2pm",
+//   },
+//   4: {
+//     id: 4,
+//     time: "3pm",
+//     interview: {
+//       student: "Archie Andrews",
+//       interviewer: {
+//         id: 4,
+//         name: "Cohana Roy",
+//         avatar: "https://i.imgur.com/FK8V841.jpg",
+//       },
+//     },
+//   },
+//   5: {
+//     id: 5,
+//     time: "4pm",
+//   },
+// };
 export default function Application(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
     appointments: {},
     interviewers: {},
-    bookInterview,
   });
 
   const daysURL = `http://localhost:8001/api/days`;
@@ -65,14 +66,35 @@ export default function Application(props) {
       ...state.appointments[id],
       interview: { ...interview },
     };
-    console.log(id, interview);
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+    setState({
+      ...state,
+      appointments,
+    });
+    console.log("id-interveiwer:", id, interview);
+    // debugger;
+    return axios.put(`/api/appointments/${id}`, { interview });
   }
 
-  function save(name, interviewer) {
-    const interview = {
-      student: name,
-      interviewer,
+  function cancelInterview(id, interveiw) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null,
     };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+    console.log("\n\n Cancel Interview: ", interveiw);
+    return axios
+      .delete(`/api/appointments/${id}`)
+      .then((state) => ({ ...state, appointments }))
+      .catch((error) => {
+        console.log("error", error);
+      });
   }
 
   // Fetching data from the API using axios get requests
@@ -111,14 +133,19 @@ export default function Application(props) {
   const appointments = getAppointmentsForDay(state, state.day);
   const schedule = appointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
-    console.log("Interview: ", interview);
+    const interviewers = getInterviewersForDay(state, state.day);
+    console.log("Interviewers: ", interviewers);
+    console.log("Interview;", interview);
+
     return (
       <Appointment
         key={appointment.id}
         id={appointment.id}
         time={appointment.time}
-        bookInterview={bookInterview}
         interview={interview}
+        interviewers={interviewers}
+        bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
       />
     );
   });

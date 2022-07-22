@@ -13,6 +13,10 @@ export default function Form(props) {
     reset();
     props.onCancel();
   };
+
+  const handleSubmit = function () {
+    props.onSave(student, interviewer);
+  };
   return (
     <main className="appointment__card appointment__card--create">
       <section className="appointment__card-left">
@@ -21,7 +25,7 @@ export default function Form(props) {
             className="appointment__create-input text--semi-bold"
             name="name"
             type="text"
-            placeholder="Enter Student Name"
+            placeholder="Student name"
             value={student}
             onChange={(event) => setStudent(event.target.value)}
             /*
@@ -42,7 +46,7 @@ export default function Form(props) {
           <Button danger onClick={cancel}>
             Cancel
           </Button>
-          <Button confirm onClick={props.onSave}>
+          <Button confirm onClick={handleSubmit}>
             Save
           </Button>
         </section>
