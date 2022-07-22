@@ -15,6 +15,7 @@ const CREATE = "CREATE";
 const SAVING = "SAVING";
 const DELETE = "DELETE";
 const CONFIRM = "CONFIRM";
+const EDIT = "EDIT";
 
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
@@ -38,6 +39,7 @@ export default function Appointment(props) {
     console.log("hi");
     props.cancelInterview(props.id).then(() => transition(EMPTY));
   }
+
   console.log("interviewers", props.interviewers);
   return (
     <article className="appointment">
@@ -48,6 +50,7 @@ export default function Appointment(props) {
           student={props.interview.student}
           interviewer={props.interview.interviewer}
           onDelete={() => transition(CONFIRM)}
+          onEdit={() => transition(EDIT)}
         />
       )}
       {mode === CREATE && (
@@ -61,6 +64,16 @@ export default function Appointment(props) {
           message="Are you sure you want to delete this appointment?"
           onCancel={back}
           onConfirm={deleteInterview}
+        />
+      )}
+      {mode === EDIT && (
+        <Form
+          //can use the react dev tool to look into the info that we want
+          student={props.interview.student}
+          interviewers={props.interviewers}
+          interviewer={props.interview.interviewer.id}
+          onSave={save}
+          onCancel={back}
         />
       )}
     </article>
