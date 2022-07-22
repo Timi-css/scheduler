@@ -7,6 +7,7 @@ import useVisualMode from "hooks/useVisualMode";
 import Status from "./Status";
 import PropTypes from "prop-types";
 import Confirm from "./Confirm";
+import Error from "./Error";
 import "components/Appointment/styles.scss";
 
 const EMPTY = "EMPTY";
@@ -14,8 +15,11 @@ const SHOW = "SHOW";
 const CREATE = "CREATE";
 const SAVING = "SAVING";
 const DELETE = "DELETE";
+const DELETING = "DELETING";
 const CONFIRM = "CONFIRM";
 const EDIT = "EDIT";
+const ERROR_SAVE = "ERROR_SAVE";
+const ERROR_DELETE = "ERROR_DELETE";
 
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
@@ -27,17 +31,23 @@ export default function Appointment(props) {
       interviewer,
     };
 
-    transition(SAVING);
+    transition(SAVING, true);
     // debugger;
-    props.bookInterview(props.id, interview).then(() => {
-      transition(SHOW);
-    });
+    props
+      .bookInterview(props.id, interview)
+      .then(() => {
+        transition(SHOW);
+      })
+      .catch((error) => transition(ERROR_SAVE, true));
   }
 
   function deleteInterview() {
-    transition(DELETE);
+    transition(DELETE, true);
     console.log("hi");
-    props.cancelInterview(props.id).then(() => transition(EMPTY));
+    props
+      .cancelInterview(props.id)
+      .then(() => transition(EMPTY))
+      .catch((error) => transition(ERROR_DELETE, true));
   }
 
   console.log("interviewers", props.interviewers);
@@ -74,6 +84,18 @@ export default function Appointment(props) {
           interviewer={props.interview.interviewer.id}
           onSave={save}
           onCancel={back}
+        />
+      )}
+      {mode === ERROR_SAVE && (
+        <Error
+          onClose={back}
+          message="Sorry, there's been an error saving your appointment"
+        />
+      )}
+      {mode === ERROR_DELETE && (
+        <Error
+          onClose={back}
+          message="Sorry, there's been an error deleting your appointment"
         />
       )}
     </article>
