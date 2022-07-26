@@ -5,6 +5,8 @@ import Button from "components/Button";
 export default function Form(props) {
   const [student, setStudent] = useState(props.student || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
+  const [error, setError] = useState("");
+
   const reset = function () {
     setStudent("");
     setInterviewer(null);
@@ -14,9 +16,23 @@ export default function Form(props) {
     props.onCancel();
   };
 
-  const handleSubmit = function () {
+  // const handleSubmit = function () {
+  //   props.onSave(student, interviewer);
+  // };
+  function validate() {
+    if (student === "") {
+      setError("student name cannot be blank");
+      return;
+    }
+    if (interviewer === null) {
+      setError("please select an interviewer");
+      return;
+    }
+    setError("");
+
     props.onSave(student, interviewer);
-  };
+  }
+
   return (
     <main className="appointment__card appointment__card--create">
       <section className="appointment__card-left">
@@ -25,15 +41,17 @@ export default function Form(props) {
             className="appointment__create-input text--semi-bold"
             name="name"
             type="text"
-            placeholder="Student name"
+            placeholder="Enter Student Name"
             value={student}
             onChange={(event) => setStudent(event.target.value)}
+            data-testid="student-name-input"
             /*
           This must be a controlled component
           your code goes here
         */
           />
         </form>
+        <section className="appointment__validation">{error}</section>
         <InterviewerList
           /* your code goes here */
           interviewers={props.interviewers}
@@ -46,7 +64,7 @@ export default function Form(props) {
           <Button danger onClick={cancel}>
             Cancel
           </Button>
-          <Button confirm onClick={handleSubmit}>
+          <Button confirm onClick={() => validate(student, interviewer)}>
             Save
           </Button>
         </section>

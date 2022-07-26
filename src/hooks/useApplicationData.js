@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-export default function useApplicationDat(props) {
+export default function useApplicationData(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
@@ -25,7 +25,6 @@ export default function useApplicationDat(props) {
     );
 
     const updateDayObj = { ...currentDay, spots };
-
     const updateDayArr = [...state.days];
 
     updateDayArr[currentDayIndex] = updateDayObj;
@@ -42,15 +41,16 @@ export default function useApplicationDat(props) {
       ...state.appointments,
       [id]: appointment,
     };
-    setState({
-      ...state,
-      appointments,
-    });
+    // setState({
+    //   ...state,
+    //   appointments,
+    // });
     console.log("id-interveiwer:", id, interview);
     // debugger;
     return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
       const days = updateSpots(state, appointments);
       setState((state) => ({ ...state, days, appointments }));
+      // updateSpots({ ...state, appointments });
     });
   }
 
@@ -68,33 +68,25 @@ export default function useApplicationDat(props) {
     console.log("\n\n Cancel Interview: ", interveiw);
     return axios
       .delete(`/api/appointments/${id}`)
-      .then((state) => ({ ...state, appointments }))
-      .catch((error) => {
-        console.log("error", error);
-      });
+      .then(() => setState((state) => ({ ...state, appointments, days })));
+    // .catch((error) => {
+    //   console.log("error", error);
+    // });
   }
 
-  const daysURL = `http://localhost:8001/api/days`;
-  const interviewersURL = `http://localhost:8001/api/interviewers`;
-  const appointmentsURL = `http://localhost:8001/api/appointments`;
+  const daysURL = `/api/days`;
+  const interviewersURL = `/api/interviewers`;
+  const appointmentsURL = `/api/appointments`;
 
   // Fetching data from the API using axios get requests
   useEffect(() => {
-    const daysPromise = axios.get(daysURL).then((response) => {
-      console.log(response.data);
-      // setDays(response.data);
-      return response.data;
-    });
-    const interviewersPromise = axios.get(interviewersURL).then((response) => {
-      console.log(response.data);
-      // setDays(response.data);
-      return response.data;
-    });
+    const daysPromise = axios.get(daysURL);
+    // .catch((error) => {
+    // //   console.log(error);
+    // // });
+    const interviewersPromise = axios.get(interviewersURL);
 
-    const appointmentsPromise = axios.get(appointmentsURL).then((response) => {
-      console.log(response.data);
-      return response.data;
-    });
+    const appointmentsPromise = axios.get(appointmentsURL);
 
     // Running all requests .then runs after the promise. Updating all states at once
     Promise.all([daysPromise, interviewersPromise, appointmentsPromise]).then(
@@ -102,9 +94,9 @@ export default function useApplicationDat(props) {
         console.log("Values: ", values);
         setState({
           ...state,
-          days: values[0],
-          interviewers: values[1],
-          appointments: values[2],
+          days: values[0].data,
+          interviewers: values[1].data,
+          appointments: values[2].data,
         });
       }
     );
