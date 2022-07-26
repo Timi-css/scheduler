@@ -4,20 +4,19 @@
 
 ### Main Page Presentation
 
-![""](./docs/Book Appt.png)
-https://github.com/Timi-css/scheduler/blob/master/docs/Main.png
+![](docs/Main.png)
 
 ### Book An Appointment
 
-https://github.com/Timi-css/scheduler/blob/master/docs/Book%20Appt.png
+![](docs/Book%20Appt.png)
 
 ### Delete An Appointment
 
-https://github.com/Timi-css/scheduler/blob/master/docs/Cancel.png
+![](docs/Cancel.png)
 
 ### Error An Appointment
 
-https://github.com/Timi-css/scheduler/blob/master/docs/Error.png
+![](docs/Error.png)
 
 ## Running Webpack Development Server
 
