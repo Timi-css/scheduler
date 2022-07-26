@@ -4,6 +4,7 @@
 
 ### Main Page Presentation
 
+(./docs/Book Appt.png)
 https://github.com/Timi-css/scheduler/blob/master/docs/Main.png
 
 ### Book An Appointment
